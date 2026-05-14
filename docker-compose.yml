@@ -1,0 +1,49 @@
+name: budget-management
+
+services:
+
+  laravel-api:
+    build:
+      context: ./services/laravel-api
+    container_name: laravel-api
+    volumes:
+      - ./services/laravel-api:/var/www
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: budget_management
+      DB_USERNAME: app
+      DB_PASSWORD: secret
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - budget-net
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: budget_management
+      MYSQL_USER: app
+      MYSQL_PASSWORD: secret
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      retries: 10
+    networks:
+      - budget-net
+
+networks:
+  budget-net:
+    driver: bridge
+
+volumes:
+  mysql-data:
