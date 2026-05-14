@@ -2,6 +2,18 @@ name: budget-management
 
 services:
 
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./services/nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - laravel-api
+    networks:
+      - budget-net
+
   laravel-api:
     build:
       context: ./services/laravel-api

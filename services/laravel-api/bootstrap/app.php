@@ -12,7 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'set.auth.user' => \App\Http\Middleware\SetAuthenticatedUser::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
