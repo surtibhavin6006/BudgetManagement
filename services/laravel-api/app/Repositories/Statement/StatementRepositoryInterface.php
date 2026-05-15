@@ -13,9 +13,9 @@ interface StatementRepositoryInterface
 
     public function pendingTransactions(Statement $statement): Collection;
 
-    public function markImported(Statement $statement): void;
-
     public function create(array $data): Statement;
+
+    public function markImported(Statement $statement): void;
 
     public function deleteAllForUser(int $userId): void;
 

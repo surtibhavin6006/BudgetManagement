@@ -2,15 +2,11 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\DTOs\Auth\ResetPasswordDTO;
+use App\Http\Requests\BaseFormRequest;
 
-class ResetPasswordRequest extends FormRequest
+class ResetPasswordRequest extends BaseFormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [
@@ -18,5 +14,14 @@ class ResetPasswordRequest extends FormRequest
             'email'    => ['required', 'email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
+    }
+
+    public function toDTO(): ResetPasswordDTO
+    {
+        return new ResetPasswordDTO(
+            token:    $this->validated('token'),
+            email:    $this->validated('email'),
+            password: $this->validated('password'),
+        );
     }
 }

@@ -2,75 +2,68 @@
 
 namespace App\Services\Auth;
 
+use App\CQRS\Auth\Commands\LoginCommand;
+use App\CQRS\Auth\Commands\LogoutCommand;
+use App\CQRS\Auth\Commands\RegisterCommand;
+use App\CQRS\Auth\Commands\ResetPasswordCommand;
+use App\CQRS\Auth\Commands\SendPasswordResetLinkCommand;
+use App\CQRS\Auth\Queries\GetAuthenticatedUserQuery;
+use App\CQRS\Auth\Queries\ValidateTokenQuery;
 use App\DTOs\Auth\ForgotPasswordDTO;
 use App\DTOs\Auth\LoginDTO;
 use App\DTOs\Auth\RegisterDTO;
 use App\DTOs\Auth\ResetPasswordDTO;
 use App\Models\User;
-use App\Repositories\Auth\AuthRepositoryInterface;
-use Illuminate\Support\Facades\Password;
-use PHPOpenSourceSaver\JWTAuth\JWTAuth;
+use App\Services\BaseService;
 
-class AuthService implements AuthServiceInterface
+class AuthService extends BaseService implements AuthServiceInterface
 {
-    public function __construct(
-        private readonly JWTAuth                  $jwt,
-        private readonly AuthRepositoryInterface  $authRepository,
-    ) {}
-
     public function register(RegisterDTO $dto): array
     {
-        $user  = $this->authRepository->create($dto);
-        $token = $this->jwt->login($user);
-
-        return ['token' => $token, 'user' => $user];
+        return $this->bus->dispatch(new RegisterCommand(
+            name:          $dto->name,
+            email:         $dto->email,
+            password:      $dto->password,
+            monthlyIncome: $dto->monthlyIncome,
+        ));
     }
 
     public function login(LoginDTO $dto): ?string
     {
-        $token = $this->jwt->attempt([
-            'email'    => $dto->email,
-            'password' => $dto->password,
-        ]);
-
-        return $token ?: null;
+        return $this->bus->dispatch(new LoginCommand(
+            email:    $dto->email,
+            password: $dto->password,
+        ));
     }
 
     public function logout(): void
     {
-        $this->jwt->invalidate($this->jwt->getToken());
+        $this->bus->dispatch(new LogoutCommand());
     }
 
     public function me(): User
     {
-        return $this->jwt->user();
+        return $this->bus->dispatch(new GetAuthenticatedUserQuery());
     }
 
     public function sendPasswordResetLink(ForgotPasswordDTO $dto): bool
     {
-        $status = Password::sendResetLink(['email' => $dto->email]);
-
-        return $status === Password::RESET_LINK_SENT;
+        return $this->bus->dispatch(new SendPasswordResetLinkCommand(
+            email: $dto->email,
+        ));
     }
 
     public function resetPassword(ResetPasswordDTO $dto): bool
     {
-        $status = Password::reset(
-            [
-                'email'    => $dto->email,
-                'password' => $dto->password,
-                'token'    => $dto->token,
-            ],
-            function (User $user, string $password) {
-                $this->authRepository->updatePassword($user, $password);
-            }
-        );
-
-        return $status === Password::PASSWORD_RESET;
+        return $this->bus->dispatch(new ResetPasswordCommand(
+            token:    $dto->token,
+            email:    $dto->email,
+            password: $dto->password,
+        ));
     }
 
     public function validateToken(): User
     {
-        return $this->jwt->parseToken()->authenticate();
+        return $this->bus->dispatch(new ValidateTokenQuery());
     }
 }

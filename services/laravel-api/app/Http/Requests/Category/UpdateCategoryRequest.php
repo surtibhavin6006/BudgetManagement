@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Category;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\DTOs\Category\UpdateCategoryDTO;
+use App\Http\Requests\BaseFormRequest;
 
-class UpdateCategoryRequest extends FormRequest
+class UpdateCategoryRequest extends BaseFormRequest
 {
     public function authorize(): bool
     {
@@ -18,5 +19,14 @@ class UpdateCategoryRequest extends FormRequest
             'color' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'icon'  => ['required', 'string', 'max:50'],
         ];
+    }
+
+    public function toDTO(): UpdateCategoryDTO
+    {
+        return new UpdateCategoryDTO(
+            name:  $this->validated('name'),
+            color: $this->validated('color'),
+            icon:  $this->validated('icon'),
+        );
     }
 }

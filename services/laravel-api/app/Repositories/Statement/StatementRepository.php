@@ -28,15 +28,15 @@ class StatementRepository implements StatementRepositoryInterface
             ->get();
     }
 
+    public function create(array $data): Statement
+    {
+        return Statement::create($data);
+    }
+
     public function markImported(Statement $statement): void
     {
         $statement->transactions()->update(['is_confirmed' => true]);
         $statement->update(['status' => 'imported']);
-    }
-
-    public function create(array $data): Statement
-    {
-        return Statement::create($data);
     }
 
     public function deleteAllForUser(int $userId): void

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface BudgetServiceInterface
 {
-    public function index(int $userId, string $month): Collection;
+    public function list(int $userId, string $month): Collection;
 
     public function store(StoreBudgetDTO $dto): Budget;
 

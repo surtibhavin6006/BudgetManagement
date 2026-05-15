@@ -15,33 +15,28 @@ use Illuminate\Http\Request;
 
 class BudgetController extends Controller
 {
-    public function __construct(
-        private readonly BudgetServiceInterface $budgetService,
-    ) {}
+    public function __construct(private readonly BudgetServiceInterface $budgetService) {}
 
     public function index(Request $request): JsonResponse
     {
-        $month   = $request->query('month', now()->format('Y-m'));
-        $budgets = $this->budgetService->index(current_user_id(), $month);
+        $budgets = $this->budgetService->list(
+            current_user_id(),
+            $request->query('month', now()->format('Y-m')),
+        );
 
         return ApiResponse::success($budgets);
     }
 
-    public function store(StoreBudgetRequest $request): JsonResponse
+    public function store(StoreBudgetRequest $request, StoreBudgetDTO $dto): JsonResponse
     {
-        $budget = $this->budgetService->store(
-            StoreBudgetDTO::fromRequest(current_user_id(), $request)
-        );
+        $budget = $this->budgetService->store($dto);
 
         return ApiResponse::success($budget, 'Budget created', 201);
     }
 
-    public function update(UpdateBudgetRequest $request, Budget $budget): JsonResponse
+    public function update(UpdateBudgetRequest $request, Budget $budget, UpdateBudgetDTO $dto): JsonResponse
     {
-        $budget = $this->budgetService->update(
-            $budget,
-            UpdateBudgetDTO::fromRequest($request),
-        );
+        $budget = $this->budgetService->update($budget, $dto);
 
         return ApiResponse::success($budget, 'Budget updated');
     }

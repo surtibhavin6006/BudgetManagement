@@ -14,32 +14,23 @@ use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
-    public function __construct(
-        private readonly CategoryServiceInterface $categoryService,
-    ) {}
+    public function __construct(private readonly CategoryServiceInterface $categoryService) {}
 
     public function index(): JsonResponse
     {
-        $categories = $this->categoryService->index(current_user_id());
-
-        return ApiResponse::success($categories);
+        return ApiResponse::success($this->categoryService->list(current_user_id()));
     }
 
-    public function store(StoreCategoryRequest $request): JsonResponse
+    public function store(StoreCategoryRequest $request, StoreCategoryDTO $dto): JsonResponse
     {
-        $category = $this->categoryService->store(
-            StoreCategoryDTO::fromRequest(current_user_id(), $request)
-        );
+        $category = $this->categoryService->store($dto);
 
         return ApiResponse::success($category, 'Category created', 201);
     }
 
-    public function update(UpdateCategoryRequest $request, Category $category): JsonResponse
+    public function update(UpdateCategoryRequest $request, Category $category, UpdateCategoryDTO $dto): JsonResponse
     {
-        $category = $this->categoryService->update(
-            $category,
-            UpdateCategoryDTO::fromRequest($request),
-        );
+        $category = $this->categoryService->update($category, $dto);
 
         return ApiResponse::success($category, 'Category updated');
     }

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\CQRS\Bus\Bus;
+use App\CQRS\Bus\BusInterface;
 use App\Services\Auth\AuthService;
 use App\Services\Auth\AuthServiceInterface;
 use App\Services\Budget\BudgetService;
@@ -18,10 +20,11 @@ class ServiceServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->bind(AuthServiceInterface::class,        AuthService::class);
-        $this->app->bind(CategoryServiceInterface::class,    CategoryService::class);
-        $this->app->bind(BudgetServiceInterface::class,      BudgetService::class);
-        $this->app->bind(StatementServiceInterface::class,   StatementService::class);
+        $this->app->bind(BusInterface::class,               Bus::class);
+        $this->app->bind(AuthServiceInterface::class,       AuthService::class);
+        $this->app->bind(CategoryServiceInterface::class,   CategoryService::class);
+        $this->app->bind(BudgetServiceInterface::class,     BudgetService::class);
+        $this->app->bind(StatementServiceInterface::class,  StatementService::class);
         $this->app->bind(TransactionServiceInterface::class, TransactionService::class);
     }
 }

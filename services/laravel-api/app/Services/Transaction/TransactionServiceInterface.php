@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface TransactionServiceInterface
 {
-    public function index(int $userId, ?string $month, ?int $categoryId): Collection;
+    public function list(int $userId, ?string $month, ?int $categoryId): Collection;
 }

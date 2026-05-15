@@ -2,15 +2,11 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\DTOs\Auth\RegisterDTO;
+use App\Http\Requests\BaseFormRequest;
 
-class RegisterRequest extends FormRequest
+class RegisterRequest extends BaseFormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [
@@ -19,5 +15,15 @@ class RegisterRequest extends FormRequest
             'password'       => ['required', 'string', 'min:8', 'confirmed'],
             'monthly_income' => ['required', 'numeric', 'min:0'],
         ];
+    }
+
+    public function toDTO(): RegisterDTO
+    {
+        return new RegisterDTO(
+            name:          $this->validated('name'),
+            email:         $this->validated('email'),
+            password:      $this->validated('password'),
+            monthlyIncome: (float) $this->validated('monthly_income'),
+        );
     }
 }

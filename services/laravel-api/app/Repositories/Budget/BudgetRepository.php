@@ -2,8 +2,6 @@
 
 namespace App\Repositories\Budget;
 
-use App\DTOs\Budget\StoreBudgetDTO;
-use App\DTOs\Budget\UpdateBudgetDTO;
 use App\Models\Budget;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -18,19 +16,19 @@ class BudgetRepository implements BudgetRepositoryInterface
             ->get();
     }
 
-    public function create(StoreBudgetDTO $dto): Budget
+    public function create(int $userId, int $categoryId, string $month, float $amountLimit): Budget
     {
         return Budget::create([
-            'user_id'      => $dto->userId,
-            'category_id'  => $dto->categoryId,
-            'month'        => $dto->month,
-            'amount_limit' => $dto->amountLimit,
+            'user_id'      => $userId,
+            'category_id'  => $categoryId,
+            'month'        => $month,
+            'amount_limit' => $amountLimit,
         ]);
     }
 
-    public function update(Budget $budget, UpdateBudgetDTO $dto): Budget
+    public function update(Budget $budget, float $amountLimit): Budget
     {
-        $budget->update(['amount_limit' => $dto->amountLimit]);
+        $budget->update(['amount_limit' => $amountLimit]);
 
         return $budget->fresh();
     }

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface CategoryServiceInterface
 {
-    public function index(int $userId): Collection;
+    public function list(int $userId): Collection;
 
     public function store(StoreCategoryDTO $dto): Category;
 

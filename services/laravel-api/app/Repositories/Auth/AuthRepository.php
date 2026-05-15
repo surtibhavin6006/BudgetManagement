@@ -2,19 +2,18 @@
 
 namespace App\Repositories\Auth;
 
-use App\DTOs\Auth\RegisterDTO;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class AuthRepository implements AuthRepositoryInterface
 {
-    public function create(RegisterDTO $dto): User
+    public function create(string $name, string $email, string $password, float $monthlyIncome): User
     {
         return User::create([
-            'name'           => $dto->name,
-            'email'          => $dto->email,
-            'password'       => Hash::make($dto->password),
-            'monthly_income' => $dto->monthlyIncome,
+            'name'           => $name,
+            'email'          => $email,
+            'password'       => Hash::make($password),
+            'monthly_income' => $monthlyIncome,
         ]);
     }
 

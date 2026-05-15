@@ -2,32 +2,26 @@
 
 namespace App\Services\Statement;
 
-use App\Models\Statement;
-use App\Repositories\Statement\StatementRepositoryInterface;
+use App\CQRS\Statement\Commands\ImportStatementCommand;
+use App\CQRS\Statement\Queries\GetPendingTransactionsQuery;
+use App\CQRS\Statement\Queries\ListStatementsQuery;
+use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Collection;
 
-class StatementService implements StatementServiceInterface
+class StatementService extends BaseService implements StatementServiceInterface
 {
-    public function __construct(
-        private readonly StatementRepositoryInterface $statementRepository,
-    ) {}
-
-    public function index(int $userId): Collection
+    public function list(int $userId): Collection
     {
-        return $this->statementRepository->allForUser($userId);
+        return $this->bus->dispatch(new ListStatementsQuery($userId));
     }
 
     public function pendingTransactions(int $userId, int $statementId): Collection
     {
-        $statement = $this->statementRepository->findForUser($userId, $statementId);
-
-        return $this->statementRepository->pendingTransactions($statement);
+        return $this->bus->dispatch(new GetPendingTransactionsQuery($userId, $statementId));
     }
 
     public function import(int $userId, int $statementId): void
     {
-        $statement = $this->statementRepository->findForUser($userId, $statementId);
-
-        $this->statementRepository->markImported($statement);
+        $this->bus->dispatch(new ImportStatementCommand($userId, $statementId));
     }
 }

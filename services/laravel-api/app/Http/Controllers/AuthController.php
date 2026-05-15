@@ -19,18 +19,16 @@ class AuthController extends Controller
 {
     public function __construct(private readonly AuthServiceInterface $authService) {}
 
-    public function register(RegisterRequest $request): JsonResponse
+    public function register(RegisterRequest $request, RegisterDTO $dto): JsonResponse
     {
-        ['token' => $token, 'user' => $user] = $this->authService->register(
-            RegisterDTO::fromRequest($request)
-        );
+        ['token' => $token, 'user' => $user] = $this->authService->register($dto);
 
         return AuthTokenResponse::make($token, $user, 201);
     }
 
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request, LoginDTO $dto): JsonResponse
     {
-        $token = $this->authService->login(LoginDTO::fromRequest($request));
+        $token = $this->authService->login($dto);
 
         if (!$token) {
             return ApiResponse::error('Invalid credentials', 401);
@@ -51,11 +49,9 @@ class AuthController extends Controller
         return ApiResponse::success($this->authService->me());
     }
 
-    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    public function forgotPassword(ForgotPasswordRequest $request, ForgotPasswordDTO $dto): JsonResponse
     {
-        $sent = $this->authService->sendPasswordResetLink(
-            ForgotPasswordDTO::fromRequest($request)
-        );
+        $sent = $this->authService->sendPasswordResetLink($dto);
 
         if (!$sent) {
             return ApiResponse::error('Unable to send reset link', 400);
@@ -64,11 +60,9 @@ class AuthController extends Controller
         return ApiResponse::success(message: 'Password reset link sent to your email');
     }
 
-    public function resetPassword(ResetPasswordRequest $request): JsonResponse
+    public function resetPassword(ResetPasswordRequest $request, ResetPasswordDTO $dto): JsonResponse
     {
-        $reset = $this->authService->resetPassword(
-            ResetPasswordDTO::fromRequest($request)
-        );
+        $reset = $this->authService->resetPassword($dto);
 
         if (!$reset) {
             return ApiResponse::error('Invalid or expired reset token', 400);

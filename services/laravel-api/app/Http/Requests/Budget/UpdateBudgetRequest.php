@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Budget;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\DTOs\Budget\UpdateBudgetDTO;
+use App\Http\Requests\BaseFormRequest;
 
-class UpdateBudgetRequest extends FormRequest
+class UpdateBudgetRequest extends BaseFormRequest
 {
     public function authorize(): bool
     {
@@ -16,5 +17,12 @@ class UpdateBudgetRequest extends FormRequest
         return [
             'amount_limit' => ['required', 'numeric', 'min:0'],
         ];
+    }
+
+    public function toDTO(): UpdateBudgetDTO
+    {
+        return new UpdateBudgetDTO(
+            amountLimit: (float) $this->validated('amount_limit'),
+        );
     }
 }

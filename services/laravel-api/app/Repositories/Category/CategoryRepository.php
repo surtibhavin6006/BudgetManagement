@@ -2,8 +2,6 @@
 
 namespace App\Repositories\Category;
 
-use App\DTOs\Category\StoreCategoryDTO;
-use App\DTOs\Category\UpdateCategoryDTO;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -19,23 +17,23 @@ class CategoryRepository implements CategoryRepositoryInterface
         return Category::onlyTrashed()->where('user_id', $userId)->get();
     }
 
-    public function create(StoreCategoryDTO $dto): Category
+    public function create(int $userId, string $name, string $color, string $icon, bool $isAiSuggested): Category
     {
         return Category::create([
-            'user_id'         => $dto->userId,
-            'name'            => $dto->name,
-            'color'           => $dto->color,
-            'icon'            => $dto->icon,
-            'is_ai_suggested' => $dto->isAiSuggested,
+            'user_id'         => $userId,
+            'name'            => $name,
+            'color'           => $color,
+            'icon'            => $icon,
+            'is_ai_suggested' => $isAiSuggested,
         ]);
     }
 
-    public function update(Category $category, UpdateCategoryDTO $dto): Category
+    public function update(Category $category, string $name, string $color, string $icon): Category
     {
         $category->update([
-            'name'  => $dto->name,
-            'color' => $dto->color,
-            'icon'  => $dto->icon,
+            'name'  => $name,
+            'color' => $color,
+            'icon'  => $icon,
         ]);
 
         return $category->fresh();
