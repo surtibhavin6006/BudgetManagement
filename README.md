@@ -196,7 +196,7 @@ docker compose restart nginx
 | RedisInsight | `http://redis.budget.test` | Basic Auth |
 | Uptime Kuma | `http://uptime.budget.test` | Basic Auth |
 | Laravel Auth endpoints | `http://api.budget.test/auth/*` | None (public) |
-| Laravel API Docs (Scramble) | `http://api.budget.test/docs/api` | None (public) |
+| Laravel API Docs (Swagger UI) | `http://api.budget.test/docs/api` | None (public) |
 | Laravel API | `http://api.budget.test/api/*` | JWT `Authorization: Bearer <token>` |
 | Upload API Docs (Swagger) | `http://api.budget.test/upload/docs` | None (public) |
 | Upload API | `http://api.budget.test/upload/*` | JWT |
