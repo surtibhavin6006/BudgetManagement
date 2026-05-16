@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Budget Management — Dev Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            surface: '#0f1117',
+            card:    '#1a1d27',
+            border:  '#2a2d3a',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0f1117; }
+    .card-link:hover { border-color: #4f46e5; }
+  </style>
+</head>
+<body class="text-gray-100 min-h-screen font-sans antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-border px-6 py-4">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-sm font-bold">B</div>
+        <div>
+          <h1 class="text-sm font-semibold leading-none">Budget Management</h1>
+          <p class="text-xs text-gray-500 mt-1">Developer Panel</p>
+        </div>
+      </div>
+      <span class="text-xs text-gray-600 font-mono">${FRONTEND_DOMAIN}</span>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-8 space-y-10">
+
+    <!-- ── API Services ───────────────────────────────────────────── -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">API Services</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- Laravel API -->
+        <div class="bg-card border border-border rounded-xl p-5 card-link transition-colors">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🐘</span>
+              <div>
+                <p class="text-sm font-semibold">Laravel API</p>
+                <p class="text-xs text-gray-500">REST API · Auth · CQRS</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono bg-gray-800 text-gray-400 px-2 py-0.5 rounded">${API_DOMAIN}</span>
+          </div>
+          <p class="text-xs text-gray-400 mb-4">
+            Handles authentication, categories, budgets, statements and transactions. JWT auth via Nginx gateway.
+          </p>
+          <div class="flex gap-2">
+            <a href="http://${API_DOMAIN}/docs/api" target="_blank"
+               class="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-medium transition-colors">
+              API Docs (Scramble)
+            </a>
+          </div>
+        </div>
+
+        <!-- Upload Service -->
+        <div class="bg-card border border-border rounded-xl p-5 card-link transition-colors">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🐍</span>
+              <div>
+                <p class="text-sm font-semibold">Upload Service</p>
+                <p class="text-xs text-gray-500">FastAPI · Python 3.12</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono bg-gray-800 text-gray-400 px-2 py-0.5 rounded">${API_DOMAIN}/upload</span>
+          </div>
+          <p class="text-xs text-gray-400 mb-4">
+            Accepts PDF bank statements, stores in MinIO, records in MySQL, publishes to Redis for AI processing.
+          </p>
+          <div class="flex gap-2">
+            <a href="http://${API_DOMAIN}/upload/docs" target="_blank"
+               class="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-medium transition-colors">
+              API Docs (Swagger)
+            </a>
+            <a href="http://${API_DOMAIN}/upload/redoc" target="_blank"
+               class="text-xs px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium transition-colors">
+              ReDoc
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Infrastructure ─────────────────────────────────────────── -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">Infrastructure</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <!-- MySQL + Adminer -->
+        <div class="bg-card border border-border rounded-xl p-5">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🗄️</span>
+              <div>
+                <p class="text-sm font-semibold">MySQL</p>
+                <p class="text-xs text-gray-500">MySQL 8.0</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono bg-gray-800 text-gray-400 px-2 py-0.5 rounded">:3306</span>
+          </div>
+          <div class="text-xs text-gray-400 space-y-1 font-mono mb-4">
+            <p>DB: <span class="text-gray-300">budget_management</span></p>
+            <p>User: <span class="text-gray-300">app</span></p>
+            <p>Pass: <span class="text-gray-300">secret</span></p>
+          </div>
+          <a href="/adminer/" target="_blank"
+             class="text-xs px-3 py-1.5 bg-blue-700 hover:bg-blue-600 rounded-lg font-medium transition-colors">
+            Open Adminer →
+          </a>
+        </div>
+
+        <!-- Redis -->
+        <div class="bg-card border border-border rounded-xl p-5">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">⚡</span>
+              <div>
+                <p class="text-sm font-semibold">Redis</p>
+                <p class="text-xs text-gray-500">Redis 7 · Event Bus</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono bg-gray-800 text-gray-400 px-2 py-0.5 rounded">:6379</span>
+          </div>
+          <div class="text-xs text-gray-400 space-y-1 font-mono mb-4">
+            <p>Channel: <span class="text-gray-300">statements:events</span></p>
+          </div>
+          <a href="http://${REDIS_DOMAIN}" target="_blank"
+             class="text-xs px-3 py-1.5 bg-red-700 hover:bg-red-600 rounded-lg font-medium transition-colors">
+            Open RedisInsight →
+          </a>
+        </div>
+
+        <!-- MinIO -->
+        <div class="bg-card border border-border rounded-xl p-5">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🪣</span>
+              <div>
+                <p class="text-sm font-semibold">MinIO</p>
+                <p class="text-xs text-gray-500">S3-compatible storage</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono bg-gray-800 text-gray-400 px-2 py-0.5 rounded">:9000</span>
+          </div>
+          <div class="text-xs text-gray-400 space-y-1 font-mono mb-4">
+            <p>Bucket: <span class="text-gray-300">statements</span></p>
+            <p>User: <span class="text-gray-300">minioadmin</span></p>
+          </div>
+          <a href="http://${MINIO_DOMAIN}" target="_blank"
+             class="text-xs px-3 py-1.5 bg-orange-700 hover:bg-orange-600 rounded-lg font-medium transition-colors">
+            Open Console →
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Monitoring & Tooling ───────────────────────────────────── -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">Monitoring & Tooling</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- Uptime Kuma -->
+        <div class="bg-card border border-border rounded-xl p-5 card-link transition-colors">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🟢</span>
+              <div>
+                <p class="text-sm font-semibold">Uptime Kuma</p>
+                <p class="text-xs text-gray-500">Service health dashboard</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono bg-gray-800 text-gray-400 px-2 py-0.5 rounded">${UPTIME_DOMAIN}</span>
+          </div>
+          <p class="text-xs text-gray-400 mb-4">
+            Visual health monitoring for all services. Watches HTTP endpoints, TCP ports, MySQL and Redis connections.
+          </p>
+          <a href="http://${UPTIME_DOMAIN}" target="_blank"
+             class="text-xs px-3 py-1.5 bg-green-700 hover:bg-green-600 rounded-lg font-medium transition-colors">
+            Open Dashboard →
+          </a>
+        </div>
+
+        <!-- RedisInsight -->
+        <div class="bg-card border border-border rounded-xl p-5 card-link transition-colors">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🔍</span>
+              <div>
+                <p class="text-sm font-semibold">RedisInsight</p>
+                <p class="text-xs text-gray-500">Redis GUI · Pub/Sub viewer</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono bg-gray-800 text-gray-400 px-2 py-0.5 rounded">${REDIS_DOMAIN}</span>
+          </div>
+          <p class="text-xs text-gray-400 mb-4">
+            Browse keys, inspect memory, and watch Pub/Sub channels live. Connect to <span class="font-mono text-gray-300">redis:6379</span> on first launch.
+          </p>
+          <a href="http://${REDIS_DOMAIN}" target="_blank"
+             class="text-xs px-3 py-1.5 bg-red-700 hover:bg-red-600 rounded-lg font-medium transition-colors">
+            Open RedisInsight →
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Quick Reference ────────────────────────────────────────── -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">Quick Reference</h2>
+      <div class="bg-card border border-border rounded-xl p-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs font-mono">
+          <div>
+            <p class="text-gray-500 mb-2 font-sans font-semibold text-xs uppercase tracking-wider">Redis Channels</p>
+            <p class="text-gray-300">statements:events</p>
+            <p class="text-gray-500 text-xs mt-1">Published by upload-service on PDF upload</p>
+          </div>
+          <div>
+            <p class="text-gray-500 mb-2 font-sans font-semibold text-xs uppercase tracking-wider">MinIO Object Path</p>
+            <p class="text-gray-300">users/{"{user_id}"}/{"{uuid}"}.pdf</p>
+            <p class="text-gray-500 text-xs mt-1">Bucket: statements</p>
+          </div>
+          <div>
+            <p class="text-gray-500 mb-2 font-sans font-semibold text-xs uppercase tracking-wider">Auth Flow</p>
+            <p class="text-gray-300">Nginx → /_auth → Laravel</p>
+            <p class="text-gray-500 text-xs mt-1">X-User-Id injected on success</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-border px-6 py-4 mt-10">
+    <div class="max-w-6xl mx-auto text-xs text-gray-600 text-center">
+      Budget Management · Local Development · All services on <span class="font-mono">budget-net</span>
+    </div>
+  </footer>
+
+</body>
+</html>

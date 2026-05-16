@@ -21,7 +21,7 @@ class RegisterHandler
             $command->password,
             $command->monthlyIncome,
         );
-        $token = $this->jwt->login($user);
+        $token = $this->jwt->fromUser($user);
 
         return ['token' => $token, 'user' => $user];
     }

@@ -9,7 +9,7 @@ from app.dependencies import get_storage
 from app.services.redis_publisher import publish_statement_uploaded
 from app.services.storage import StorageInterface
 
-router = APIRouter(prefix="/upload")
+router = APIRouter()
 
 ALLOWED_CONTENT_TYPES = {"application/pdf"}
 

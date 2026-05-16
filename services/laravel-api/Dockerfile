@@ -3,7 +3,10 @@ FROM php:8.4-fpm
 RUN apt-get update && apt-get install -y \
     git curl zip unzip libpng-dev libonig-dev libxml2-dev libzip-dev \
     && docker-php-ext-install pdo_mysql mbstring bcmath gd zip exif pcntl \
+    && docker-php-ext-enable opcache \
     && rm -rf /var/lib/apt/lists/*
+
+COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
