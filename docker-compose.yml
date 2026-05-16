@@ -11,6 +11,7 @@ services:
       - ./services/nginx/conf.d:/etc/nginx/conf.d:ro
     depends_on:
       - laravel-api
+      - upload-service
     networks:
       - budget-net
 
@@ -34,6 +35,37 @@ services:
     networks:
       - budget-net
 
+  upload-service:
+    build:
+      context: ./services/upload-service
+    container_name: upload-service
+    volumes:
+      - ./services/upload-service:/app
+    ports:
+      - "8002:8002"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: budget_management
+      DB_USERNAME: app
+      DB_PASSWORD: secret
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MINIO_HOST: minio
+      MINIO_PORT: 9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: statements
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      minio:
+        condition: service_started
+    networks:
+      - budget-net
+
   mysql:
     image: mysql:8.0
     container_name: mysql
@@ -53,9 +85,33 @@ services:
     networks:
       - budget-net
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - budget-net
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio-data:/data
+    networks:
+      - budget-net
+
 networks:
   budget-net:
     driver: bridge
 
 volumes:
   mysql-data:
+  minio-data:
